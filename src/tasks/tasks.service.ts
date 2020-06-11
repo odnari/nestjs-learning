@@ -32,7 +32,7 @@ export class TasksService {
         const found = this.tasks.find(t => t.id === id)
 
         if (!found) {
-            throw new NotFoundException()
+            throw new NotFoundException(`Task with id(${id}) not found.`)
         }
 
         return found
