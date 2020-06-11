@@ -23,14 +23,10 @@ export class TasksController {
     constructor(private tasksService: TasksService) {
     }
 
-    // @Get()
-    // getTasks(@Query(ValidationPipe) getTasksFilterDto: GetTasksFilterDto): Task[] {
-    //     if (Object.keys(getTasksFilterDto).length) {
-    //         return this.tasksService.getTasksWithFilters(getTasksFilterDto)
-    //     }
-    //
-    //     return this.tasksService.getAllTasks()
-    // }
+    @Get()
+    getTasks(@Query(ValidationPipe) getTasksFilterDto: GetTasksFilterDto): Promise<Task[]> {
+        return this.tasksService.getTasks(getTasksFilterDto)
+    }
 
     @Get('/:id')
     getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task> {
