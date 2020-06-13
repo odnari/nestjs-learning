@@ -9,7 +9,8 @@ import {CreateTaskDto} from "./dto/create-task.dto";
 const mockTaskRepository = () => ({
     getTasks: jest.fn(),
     findOne: jest.fn(),
-    createTask: jest.fn()
+    createTask: jest.fn(),
+    delete: jest.fn()
 })
 
 const mockUser = {
@@ -71,13 +72,32 @@ describe('Tasks Service', () => {
     })
 
     describe('createTask', () => {
-        it('create task', async () => {
+        it('creates a task and returns the result', async () => {
             const mockTask: CreateTaskDto = {title: 'some title', description: 'some desc'}
             taskRepository.createTask.mockResolvedValue(mockTask)
 
             const result = await tasksService.createTask(mockTask, mockUser)
             expect(result).toEqual(mockTask)
             expect(taskRepository.createTask).toHaveBeenCalledWith(mockTask, mockUser)
+        })
+    })
+
+    describe('deleteTask', () => {
+        it('deletes task by id', async () => {
+            taskRepository.delete.mockResolvedValue({
+                affected: 1
+            })
+
+            await tasksService.deleteTask(1, mockUser)
+            expect(taskRepository.delete).toHaveBeenCalledWith({id: 1, userId: mockUser.id})
+        })
+
+        it('throws an error if there is not task with id', async () => {
+            taskRepository.delete.mockResolvedValue({
+                affected: 0
+            })
+
+            await expect(tasksService.deleteTask(1, mockUser)).rejects.toThrow(NotFoundException)
         })
     })
 })
